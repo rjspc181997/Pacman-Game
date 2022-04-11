@@ -1,0 +1,319 @@
+<html>
+    <head>
+        <title>Pacman Demo</title>
+      <meta http-equiv="refresh" content="20;world_one.html" />
+        <style type="text/css">
+            body{
+                background-color: black;
+                margin: 0;
+            }
+            div.row div{
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+            }
+            div.brick{
+                background-color: blue;
+            }
+            div.coin{
+                background: url('img/coin.gif');
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            div.cherry{
+                background: url('img/cherry.png');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            div#pacman{
+                background: url('img/pacman.gif');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+                width: 20px;
+                height: 20px;
+                position: absolute;
+            }
+            div#ghostOne{
+                background: url('img/ghost.gif');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+                position: absolute;
+                width: 20px;
+                height: 20px;   
+            }
+            div#ghostTwo{
+                background: url('img/ghost2.gif');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+                position: absolute;
+                width: 20px;
+                height: 20px;
+            }
+            div#ghostThree{
+                background: url('img/ghost3.gif');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+                position: absolute;
+                width: 20px;
+                height: 20px;
+            }
+            div#ghostFour{
+                background: url('img/ghost4.gif');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+                width: 20px;
+                height: 20px;
+                position: absolute;
+            }
+            div.empty{
+                
+            }
+            div#score{
+                border: 1px solid white;
+                width: 30px;
+                height: 30px;
+                color: white;
+                padding: 7px;
+                position: absolute;
+                top: 10px;
+                left: 450px ;
+            }
+        </style>
+    </head>
+
+<body>
+    
+    <div id="container">
+        <div id='world'></div>
+        <div id="pacman"></div>
+        <div id="score">0</div>
+        <div id="ghostOne"></div><!--top:40px left:200px-->   
+        <div id="ghostTwo"></div> <!--top:139px left:200;-->  
+        <div id="ghostThree"></div><!--262 ,300-->
+        <div id="ghostFour"></div><!--180 ,300-->
+    </div>
+  
+
+    <script>
+        var world=[      
+            [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+            [2,1,1,1,1,1,1,2,1,1,1,1,1,2,1,2,1,2,3,2],
+            [2,1,2,1,2,2,1,1,1,1,1,1,1,1,1,2,1,1,1,2],
+            [2,1,2,1,2,1,1,2,1,2,2,2,1,2,1,2,1,2,1,2],
+            [2,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2],
+            [2,1,2,1,2,1,2,2,1,2,1,2,1,1,1,2,1,2,1,2],
+            [2,1,1,1,2,1,1,2,1,2,3,2,2,1,2,2,1,2,1,2],
+            [2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+            [2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,2],
+            [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+            [2,1,2,1,2,2,2,2,2,1,2,2,2,2,2,1,2,1,1,2],
+            [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,2],
+            [2,2,2,1,2,1,2,2,2,1,2,1,2,2,2,1,2,1,2,2],
+            [2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+            [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+
+        ];
+        var score = 0;
+
+        
+        var pacman={
+            x:1,
+            y:1
+        }
+
+        var ghostOne={
+            x:10,
+            y:2
+        }
+      
+        var ghostTwo={
+            x:12,
+            y:7
+        }
+
+        var ghostThree={
+            x:18,
+            y:9
+        }
+
+        var ghostFour={
+            x:3,
+            y:13
+        }
+
+
+
+    
+        function displayWorld(){
+            var output = '';
+
+            for(var i=0;i<world.length;i++){
+                output += "\n<div class='row'>\n";
+                for(var j=0; j<world[i].length; j++){
+                    if(world[i][j] == 2){
+                        output += "<div class='brick'></div>";
+                    }
+                    else if(world[i][j] == 1){
+                        output += "<div class='coin'></div>"
+                    }
+                    else if(world[i][j]==0){
+                        output +="<div class='empty'></div>"
+                    }
+                    else if(world[i][j]==3){
+                        output +="<div class='cherry'></div>"
+                    }
+                                              
+                }
+                output +="\n</div>"
+            }
+            document.getElementById('world').innerHTML = output;
+        }
+
+        function displayPacman(){
+            document.getElementById('pacman').style.top = pacman.y*20 + 'px';
+            document.getElementById('pacman').style.left = pacman.x*20 + 'px';
+        }
+        function displayGhost(){
+            document.getElementById('ghostOne').style.top = ghostOne.y*20 + 'px';
+            document.getElementById('ghostOne').style.left = ghostOne.x*20 + 'px';
+            document.getElementById('ghostTwo').style.top = ghostTwo.y*20 + 'px';
+            document.getElementById('ghostTwo').style.left = ghostTwo.x*20 + 'px';
+            document.getElementById('ghostThree').style.top = ghostThree.y*20 + 'px';
+            document.getElementById('ghostThree').style.left = ghostThree.x*20 + 'px';
+            document.getElementById('ghostFour').style.top = ghostFour.y*20 + 'px';
+            document.getElementById('ghostFour').style.left = ghostFour.x*20 + 'px';
+            ghostOne_bot();
+            ghostTwo_bot();
+            ghostThree_bot();
+            ghostFour_bot();
+        }
+        function displayScore(){
+            document.getElementById('score').innerHTML = score;
+        }
+        function ghostOne_bot(){
+            if(world[ghostOne.y][ghostOne.x-1]!=2 && world[ghostOne.y][ghostOne.x-1]>5){//left
+                ghostOne.x--;
+            }
+            else if( world[ghostOne.y][ghostOne.x+1]!=2 && world[ghostOne.y][ghostOne.x+1]<5){//right
+                ghostOne.x++;
+            }
+            else if(world[ghostOne.y-1][ghostOne.x]!=2 && world[ghostOne.y-1][ghostOne.x]>14){//top
+                ghostOne.y--;
+            }
+            else if(world[ghostOne.y+1][ghostOne.x]!=2 && world[ghostOne.y+1][ghostOne.x]<10){//bottom
+                ghostOne.y++;
+            }
+        }
+        function ghostTwo_bot(){
+            if(world[ghostTwo.y][ghostTwo.x-1]!=2 && world[ghostTwo.y][ghostTwo.x-1]<5){//left
+                ghostTwo.x--;
+            }
+            else if( world[ghostTwo.y][ghostTwo.x+1]!=2 && world[ghostTwo.y][ghostTwo.x+1]>5){//right
+                ghostTwo.x++;
+            }
+            else if(world[ghostTwo.y-1][ghostTwo.x]!=2 && world[ghostTwo.y-1][ghostTwo.x]>14){//top
+                ghostTwo.y--;
+            }
+            else if(world[ghostTwo.y+1][ghostTwo.x]!=2 && world[ghostTwo.y+1][ghostTwo.x]<10){//bottom
+                ghostTwo.y++;
+            }
+        }
+        function ghostThree_bot(){
+            if(world[ghostThree.y][ghostThree.x-1]!=2 && world[ghostThree.y][ghostThree.x-1]>=1){//left
+                ghostThree.x--;
+            }
+            else if( world[ghostThree.y][ghostThree.x+1]!=2 && world[ghostThree.y][ghostThree.x+1]<=12){//right
+                ghostThree.x++;
+            }
+            else if(world[ghostThree.y-1][ghostThree.x]!=2 && world[ghostThree.y-1][ghostThree.x]>=1){//top
+                ghostTwo.y--;
+            }
+            else if(world[ghostThree.y+1][ghostThree.x]!=2){//bottom
+                ghostThree.y++;
+            }
+        }
+        function ghostFour_bot(){
+            if(world[ghostFour.y][ghostFour.x-1]!=2 && world[ghostFour.y][ghostFour.x-1]>=3){//left
+                ghostFour.x--;
+        
+            }
+            else if( world[ghostFour.y][ghostFour.x+1]!=2 && world[ghostFour.y][ghostFour.x+1]<=12){//right
+                ghostFour.x++;
+            }
+            else if(world[ghostFour.y-1][ghostFour.x]!=2){//top
+                ghostFour.y--;
+               
+            }
+            else if(world[ghostFour.y+1][ghostFour.x]!=2){//bottom
+                ghostFour.y++;
+            }
+        }
+
+
+        
+        displayWorld();
+        displayPacman();
+        displayGhost();
+        setInterval(displayGhost,1000);
+
+        document.onkeydown = function(e){
+            if(e.keyCode==37 && world[pacman.y][pacman.x-1]!=2){//left
+                pacman.x--;
+            }
+            else if(e.keyCode==39 && world[pacman.y][pacman.x+1]!=2){//right
+                pacman.x++;
+            }
+            else if(e.keyCode==38 && world[pacman.y-1][pacman.x]!=2){//top
+                pacman.y--;
+            }
+            else if(e.keyCode==40 && world[pacman.y+1][pacman.x]!=2){//bottom
+                pacman.y++;
+            }
+            if(world[pacman.y][pacman.x]==1)
+            {
+                world[pacman.y][pacman.x]=0;
+                score+=10;
+                displayWorld();
+                displayScore();
+            }
+            else if(world[pacman.y][pacman.x]==3)
+            {
+                world[pacman.y][pacman.x]=0;
+                score+=20;
+                displayWorld();
+                displayScore();
+            }
+            if(world[pacman.y][pacman.x]==world[ghostOne.y][ghostOne.x]){
+                alert('You Lose');
+                location.href = 'world_one.html';
+            }
+            else if(world[pacman.y][pacman.x]==world[ghostTwo.y][ghostTwo.x]){
+                alert('You Lose');
+                location.href = 'world_two.html';
+            }
+            else if(world[pacman.y][pacman.x]==world[ghostThree.y][ghostThree.x]){
+                alert('You Lose');
+                location.href = 'world_three.html';
+            }
+            else if(world[pacman.y][pacman.x]==world[ghostFour.y][ghostFour.x]){
+                alert('You Lose');
+                location.href = 'world_four.html';
+            }
+            if(score>=750){
+                alert('You win');
+            }
+         
+            //console.log(e.keyCode);
+            displayPacman();
+        }
+       
+    </script>
+
+</body>
+</html>
